@@ -1,7 +1,7 @@
 <template>
   <div class="home mt-5">
     <div>
-       <!-- show login when not authenticated -->
+      <!-- show login when not authenticated -->
       <div v-if="!$gAuth.GoogleAuth.isSignedIn.we" @click="login">
         <div class="jumbotron jumbotron-fluid text-center">
           <div class="container">
@@ -27,23 +27,23 @@
       </div>
       <!-- show logout when authenticated -->
       <div v-if="$gAuth.GoogleAuth.isSignedIn.we" @click="logout()">
-      <div>
-        <div class="jumbotron jumbotron-fluid text-center">
-          <div class="container">
-            <h1 class="display-3">Find everything you've ever browsed</h1>
-            <p class="lead">
-              All your browsing history, full text search for all pages and
-              youtube videos you have browsed. Try it now.
-            </p>
-            <p class="lead">
-              <a class="btn btn-primary btn-lg" href="/main" role="button"
-                >Start Searching Now</a
-              >
-            </p>           
+        <div>
+          <div class="jumbotron jumbotron-fluid text-center">
+            <div class="container">
+              <h1 class="display-3">Find everything you've ever browsed</h1>
+              <p class="lead">
+                All your browsing history, full text search for all pages and
+                youtube videos you have browsed. Try it now.
+              </p>
+              <p class="lead">
+                <a class="btn btn-primary btn-lg" href="/main" role="button"
+                  >Start Searching Now</a
+                >
+              </p>
+            </div>
           </div>
         </div>
       </div>
-    </div>
     </div>
   </div>
 </template>

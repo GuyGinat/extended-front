@@ -32,6 +32,7 @@ import axios from "axios";
 import youtubeThumbnail from "youtube-thumbnail";
 import VideoCard from "@/components/VideoCard";
 import HistoryCard from "@/components/HistoryCard";
+import api from '../services/api.service';
 
 export default {
   data() {
@@ -73,14 +74,10 @@ export default {
         });
     },
     async searchAll() {
-      const { data } = await axios.get(
-        `https://extended-mind-api.herokuapp.com/history?q=${this.query}&u=${this.$gAuth.GoogleAuth.currentUser.we.Ea}`,
-        // `https://localhost:3001/history?q=${this.query}&u=${this.$gAuth.GoogleAuth.currentUser.we.Ea}`,
-        {
-          headers: {
-            Authorization: `Bearer `,
-          },
-        }
+      const { data } = await api.get(
+        `/history?q=${this.query}&u=${this.$gAuth.GoogleAuth.currentUser.we.Ea}`
+        // `https://extended-mind-api.herokuapp.com/history?q=${this.query}&u=${this.$gAuth.GoogleAuth.currentUser.we.Ea}`,
+        // `https://localhost:3001/history?q=${this.query}&u=${this.$gAuth.GoogleAuth.currentUser.we.Ea}`,       
       );
 
       this.data = data;      

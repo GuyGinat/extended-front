@@ -1,10 +1,10 @@
 <template>
   <div id="app" class="container">
     <div id="nav" class="nav">
-      <router-link to="/">Home | </router-link> 
-      <router-link v-if="this.isSignedIn" to="/profile">&nbsp;Profile |</router-link>
-      <router-link v-if="this.isSignedIn" to="/main"> &nbsp;Search</router-link>
-      <span class="btns" v-if="$gAuth.isInit">
+      <router-link class="link" to="/">Home </router-link> |
+      <router-link class="link" to="/profile">Profile</router-link> |
+      <router-link class="link" to="/main"> &nbsp;Search</router-link>
+      <!-- <span class="btns" v-if="$gAuth.isInit">
         <a
           v-if="!this.isSignedIn"
           @click="login"
@@ -17,7 +17,8 @@
           class="btn btn-sm btn-outline-info ml-3"
           >Log out</a
         >
-      </span>
+      </span> -->
+      <!-- <button @click="changeTest">{{test}}</button> -->
     </div>
     <router-view />
   </div>
@@ -26,6 +27,9 @@
 <style>
 .nav {
   margin-top: 1rem;
+}
+.link {
+  padding: 5px;
 }
 .btns a {
   display: inline;
@@ -38,11 +42,14 @@
 </style>
 
 <script>
+import ApiService from "./services/api.service.js";
+import { mapState } from 'vuex'
+
 export default {
   name: "app",
   data() {
     return {
-      isSignedIn: false
+      isSignedIn: false,
     }
   },
   methods: {
@@ -56,6 +63,18 @@ export default {
       const response = await this.$gAuth.signOut()
       this.isSignedIn = false
     },    
-  },  
+    changeTest() {
+      this.$store.dispatch('test')
+    },
+  },
+  computed: {
+    isLoggedIn : function(){ return this.$store.getters.isLoggedIn},
+    ...mapState([
+      'test', 'status'
+    ])
+  },
+  created: function() {
+    ApiService.init();
+  }  
 };
 </script>
