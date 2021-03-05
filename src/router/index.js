@@ -3,6 +3,7 @@ import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
 import Profile from "../views/Profile.vue";
 import Main from "../views/Main.vue";
+import ExtensionRedirect from "../views/ExtensionRedirect.vue";
 
 Vue.use(VueRouter);
 
@@ -30,6 +31,11 @@ const routes = [
     // which is lazy-loaded when the route is visited.
     component: () =>
       import(/* webpackChunkName: "about" */ "../views/About.vue")
+  },
+  {
+    path: "/extension/:id",
+    name: "extension-sign-in",
+    component: ExtensionRedirect
   }
 ];
 
