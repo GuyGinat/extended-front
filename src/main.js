@@ -4,6 +4,7 @@ import router from "./router";
 import store from "./store";
 import axios from "axios";
 import VueAxios from "vue-axios";
+import ApiService from "./services/api.service";
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import VueYoutube from "vue-youtube";
 import GAuth from 'vue-google-oauth2'
@@ -22,7 +23,10 @@ Vue.use(vueDebounce)
 Vue.config.productionTip = false;
 
 Vue.use(VueYoutube);
-Vue.use(axios, VueAxios);
+Vue.use(VueAxios, axios);
+
+ApiService.init();
+
 Vue.use(require("vue-moment"));
 
 new Vue({

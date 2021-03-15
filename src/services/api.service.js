@@ -1,15 +1,25 @@
 import Vue from "vue";
+import store from "../store";
 
 import JwtService from "./jwt.service";
 console.log("Process enviorement (development/production) = " + process.env.NODE_ENV);
 // const API_URL = (process.env.NODE_ENV === 'development' ? "http://localhost:8081" : "https://api.novos.gg");
 const API_URL = "http://localhost:3001";
 console.log(`connecting to api at ${API_URL}`);
+
 const ApiService = {
     init() {
         Vue.axios.defaults.baseURL = API_URL;
         if (JwtService.getToken()) {
             this.setHeader();
+            this.get('/users')
+            .then(resp => {
+                const user = resp.data.user
+                store.commit("auth_token_verified", user)
+            })
+            .catch(err => {
+                console.log(err)
+            })
         }
     },
 

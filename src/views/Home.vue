@@ -1,8 +1,8 @@
 <template>
-  <div class="home mt-5">
+  <div class="container home mt-5">
     <div>
        <!-- show login when not authenticated -->
-      <div v-if="!$gAuth.GoogleAuth.isSignedIn.we" @click="login">
+      <div v-if="!this.isSignedIn" @click="login">
         <div class="jumbotron jumbotron-fluid text-center">
           <div class="container">
             <h1 class="display-4">Find everything you've ever browsed</h1>
@@ -26,7 +26,7 @@
         </div>
       </div>
       <!-- show logout when authenticated -->
-      <div v-if="$gAuth.GoogleAuth.isSignedIn.we" @click="logout()">
+      <div v-if="this.isSignedIn" @click="logout">
       <div>
         <div class="jumbotron jumbotron-fluid text-center">
           <div class="container">
@@ -54,6 +54,7 @@ export default {
   data() {
     return {
       currentUser: null,
+      isSignedIn: this.$store.getters.isLoggedIn,
     };
   },
   methods: {
@@ -66,6 +67,9 @@ export default {
       console.log(this.$gAuth);
       // console.log(googleUser);
     },
+    logout: function() {
+      console.log('logout')
+    }
   },
 };
 </script>

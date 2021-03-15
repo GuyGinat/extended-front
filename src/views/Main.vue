@@ -14,7 +14,7 @@
     </div>
 
     <!-- serach result list -->
-    <div class="card-container">
+    <div class="card-container py-3">
       <div v-for="card in data" :key="card._id">
         <div v-if="card._index == 'youtube-captions'">
           <video-card :data="card" />
@@ -29,6 +29,7 @@
 
 <script>
 import axios from "axios";
+import api from "../services/api.service"
 import youtubeThumbnail from "youtube-thumbnail";
 import VideoCard from "@/components/VideoCard";
 import HistoryCard from "@/components/HistoryCard";
@@ -73,17 +74,8 @@ export default {
         });
     },
     async searchAll() {
-      const { data } = await axios.get(
-        `https://extended-mind-api.herokuapp.com/history?q=${this.query}&u=${this.$gAuth.GoogleAuth.currentUser.we.Ea}`,
-        // `https://localhost:3001/history?q=${this.query}&u=${this.$gAuth.GoogleAuth.currentUser.we.Ea}`,
-        {
-          headers: {
-            Authorization: `Bearer `,
-          },
-        }
-      );
-
-      this.data = data;      
+      const { data } = await api.get(`historyOld?q=${this.query}&u=${this.$store.getters.userId}`)
+      this.data = data;
     },
     changeVideo(video) {
       this.videoId = video.id;
@@ -131,7 +123,7 @@ export default {
   },
   mounted() {
     // When the user scrolls the page, execute myFunction
-    window.onscroll = function () {
+    window.onscroll = function() {
       makeSticky();
       console.log("1");
     };
@@ -166,8 +158,8 @@ export default {
 #search {
   position: absolute;
   width: 100vw;
-  left: 0;
-  top: 50px;
+  left: 0;  
+  top: 60px;
   align-content: center;
   align-items: center;
   background-color: white;

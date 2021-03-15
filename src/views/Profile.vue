@@ -1,50 +1,64 @@
 <template>
-    <div class="container center-all emp-profile">
-        <div class="row">
-          <div class="col-md-12">
-            <div class="profile-img">
-              <img
-                :src="$auth.user.picture"
-                alt=""
-              />
-            </div>
-          </div>
+  <div class="container center-all emp-profile">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="profile-img">
+          <img :src="user.picture" alt="" />
         </div>
-        <div class="row card mt-3 panel-info p-3">
-          <div class="col-md-12">
-            <div class="tab-content profile-tab">
-                <div class="row">
-                  <div class="col-md-6">
-                    <label>Name</label>
-                  </div>
-                  <div class="col-md-6">
-                    <p>{{ $auth.user.name }}</p>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-md-6">
-                    <label>Email</label>
-                  </div>
-                  <div class="col-md-6">
-                    <p>{{ $auth.user.email }}</p>
-                  </div>
-                </div>
-            </div>
-          </div>
-        </div>
+      </div>
     </div>
+    <div class="row card mt-3 panel-info p-3">
+      <div class="col-md-12">
+        <div class="tab-content profile-tab">
+          <div class="row">
+            <div class="col-md-6">
+              <label>Name</label>
+            </div>
+            <div class="col-md-6">
+              <p>{{ user.first_name + " " + user.last_name }}</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <label>Email</label>
+            </div>
+            <div class="col-md-6">
+              <p>{{ user.email }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-container">
+      <div v-for="card in data" :key="card._id">
+          <history-card :data="card" />
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
+import api from "../services/api.service"
+import HistoryCard from "../components/HistoryCard"
+
 export default {
   data() {
-    return {};
-  }
+    return {
+      user: this.$store.getters.user,
+      data: [],
+    };
+  },
+  components: {
+    HistoryCard
+  },
+  async mounted() {
+    const { data } = await api.get('history/latest')
+    this.data = data
+  },
 };
 </script>
 
 <style>
-
 .center-all {
   display: flex;
   flex-direction: column;
@@ -54,7 +68,7 @@ export default {
 
 .panel-info {
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-  width:500px;
+  width: 500px;
 }
 .emp-profile {
   padding: 3%;
