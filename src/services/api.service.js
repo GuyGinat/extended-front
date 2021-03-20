@@ -55,6 +55,19 @@ const ApiService = {
         return Vue.axios.delete(resource).catch(error => {
             throw new Error(`[RWV] ApiService ${error}`);
         });
+    },
+
+    validateUser(userId) {
+        store.commit('auth_request')
+        this.get(`users/user?userId=${userId}`)
+        .then(user => {
+            console.log(user)
+            return true
+        })
+        .catch(err => {
+            return false
+            console.log(err)
+        })
     }
 };
 

@@ -88,7 +88,6 @@
 </template>
 
 <script>
-import axios from "axios";
 export default {
   name: "VideoCard",
   props: { data: Object },

@@ -15,6 +15,7 @@
 
     <!-- serach result list -->
     <div class="card-container py-3">
+      <div v-if="noResults"> No results found </div>
       <div v-for="card in data" :key="card._id">
         <div v-if="card._index == 'youtube-captions'">
           <video-card :data="card" />
@@ -42,6 +43,7 @@ export default {
       data: [],
       videos: [],
       currentVideo: null,
+      // noResults: false,  
     };
   },
   components: {
@@ -54,6 +56,11 @@ export default {
         .get("http://localhost:3001/yt/captions?q=" + this.query)
         .then((response) => {
           this.data = response.data;
+          if (response.data.length === 0) {
+            this.noResults = true;
+          } else {
+            this.noResults = false;
+          }
           this.videos = response.data.map((v) => {
             this.parseYoutubeTitle(v._source.title);
             return {
@@ -120,6 +127,9 @@ export default {
     player() {
       return this.$refs.youtube.player;
     },
+    noResults() {
+      return (this.data.length === 0) && this.query
+    }
   },
   mounted() {
     // When the user scrolls the page, execute myFunction

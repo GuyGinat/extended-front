@@ -2,7 +2,7 @@
   <div class="container home mt-5">
     <div>
        <!-- show login when not authenticated -->
-      <div v-if="!this.isSignedIn" @click="login">
+      <div v-if="!this.isSignedIn">
         <div class="jumbotron jumbotron-fluid text-center">
           <div class="container">
             <h1 class="display-4">Find everything you've ever browsed</h1>
@@ -11,17 +11,10 @@
               youtube videos you have browsed. Try it now.
             </p>
             <p class="lead">
-              <a class="btn btn-primary btn-lg" @click="login" role="button"
+              <a class="btn btn-primary btn-lg" role="button"
                 >Start Searching Now</a
               >
-            </p>
-            <button
-              type="button"
-              class="btn btn-outline-dark expand-btn"
-              @click="checkUser"
-            >
-              Test User
-            </button>
+            </p>            
           </div>
         </div>
       </div>

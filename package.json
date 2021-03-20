@@ -21,7 +21,6 @@
     "vue": "^2.6.12",
     "vue-axios": "^3.2.0",
     "vue-debounce": "^2.6.0",
-    "vue-google-oauth2": "^1.5.5",
     "vue-moment": "^4.1.0",
     "vue-router": "^3.2.0",
     "vue-youtube": "^1.4.0",

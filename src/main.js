@@ -7,16 +7,9 @@ import VueAxios from "vue-axios";
 import ApiService from "./services/api.service";
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import VueYoutube from "vue-youtube";
-import GAuth from 'vue-google-oauth2'
 import vueDebounce from 'vue-debounce'
 
-const gauthOption = {
-  clientId: '337409544743-rsfnra4qscr374r6j41c6vrflu0hgp2e.apps.googleusercontent.com',
-  scope: 'profile email',
-  prompt: 'select_account'
-}
 
-Vue.use(GAuth, gauthOption)
 
 Vue.use(vueDebounce)
 

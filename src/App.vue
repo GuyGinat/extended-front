@@ -15,16 +15,15 @@
                     to="/profile"
                     >Profile</router-link
                 >
-                <!-- <router-link v-if="this.isSignedIn" to="/profile">&nbsp;Profile |</router-link> -->
                 <router-link to="/main" class="mr-1 py-1 nav-btn">
-                    &nbsp;Search</router-link
+                    Search</router-link
                 >
             </div>
-            <!-- <router-link v-if="this.isSignedIn" to="/main"> &nbsp;Search</router-link> -->
-            <span class="btns" v-if="$gAuth.isInit">
+            <span class="btns">
+                <!-- <span class="btns" v-if="this.isGauthInit"> -->
                 <button
                     v-if="!this.isSignedIn"
-                    @click="login"
+                    @click="backedndLogin"
                     class="nav-btn py-1 right"
                 >
                     Log in
@@ -109,35 +108,52 @@
 </style>
 
 <script>
-import ApiService from "./services/api.service";
+const handleMessage = (e, callback) => {
+    if (typeof callback === "function" && e.data.auth === "passport") {
+        callback(e.data);
+    }
+};
+
 export default {
     name: "app",
     data() {
-        return {
-            isSignedIn: this.$store.getters.isLoggedIn
-        };
+        return {};
     },
-    mounted() {
-        this.isSignedIn = this.$store.getters.isLoggedIn;
+    created() {
+        window.addEventListener("message", this.handleOAuthMessageCb);
+    },
+    destroyed: function() {
+        window.removeEventListener("message", this.handleOAuthMessageCb);
+    },
+
+    computed: {
+        isSignedIn: function() {
+            return this.$store.getters.isLoggedIn;
+        }
     },
     methods: {
-        async login() {
-            const googleUser = await this.$gAuth.signIn();
-
-            if (googleUser.getId() !== this.$store.getters.user.id) {
-                this.$store.dispatch("logout");
-                this.isSignedIn = false;
-                return;
-            } else {
-                this.isSignedIn = true;
-            }
-            // this.$store.commit('check_auth', googleUser)
+        async backedndLogin() {
+            this.$store.commit("login_request");
+            window.open("http://localhost:3001/users/google-auth");
         },
+
         // Log the user out
         async logout() {
-            this.$store.dispatch("logout");
-            const response = await this.$gAuth.signOut();
+            this.$store.dispatch("logout").then(() => {
+                this.$router.push("/");
+            });
             this.isSignedIn = false;
+        },
+        handleOAuthMessageCb: function(e) {
+            return handleMessage(e, data => {
+                if (data.success) {
+                    this.$store.dispatch("postLogin", data.token).then(() => {
+                        this.$router.push("/main");
+                    });
+                } else {
+                    this.$store.commit("login_denied", data.reason);
+                }
+            });
         }
     }
 };

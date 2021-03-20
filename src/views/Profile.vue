@@ -3,7 +3,7 @@
     <div class="row">
       <div class="col-md-12">
         <div class="profile-img">
-          <img :src="user.picture" alt="" />
+          <img :src="user && user.picture" alt="" />
         </div>
       </div>
     </div>
@@ -15,7 +15,7 @@
               <label>Name</label>
             </div>
             <div class="col-md-6">
-              <p>{{ user.first_name + " " + user.last_name }}</p>
+              <p>{{ user && user.first_name + " " + user && user.last_name }}</p>
             </div>
           </div>
           <div class="row">
@@ -29,11 +29,11 @@
         </div>
       </div>
     </div>
-    <div class="card-container">
+    <!-- <div class="card-container">
       <div v-for="card in data" :key="card._id">
           <history-card :data="card" />
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -51,10 +51,15 @@ export default {
   components: {
     HistoryCard
   },
+  computed: {
+    user: function() { return this.$store.getters.user}
+  },
   async mounted() {
     const { data } = await api.get('history/latest')
+    this.user = this.$store.getters.user
+    console.log(this.user)
     this.data = data
-  },
+  },  
 };
 </script>
 
