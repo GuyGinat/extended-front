@@ -68,7 +68,7 @@ const ApiService = {
             return false
             console.log(err)
         })
-    }
+    },    
 };
 
 export default ApiService;

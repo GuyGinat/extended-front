@@ -18,7 +18,7 @@ export default {
     methods: {
         register: function() {
             this.$store
-                .dispatch("register", {"id": this.userId})
+                .dispatch("register", {doc: {"id": this.userId}})
                 .then(() => {
                     console.log(`loged in`)
                 })

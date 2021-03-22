@@ -1,6 +1,5 @@
 <template>
-  <div id="app" class="container">
-    <!-- Check that the SDK client is not currently loading before accessing is methods -->
+  <div class="container my-12">
     <div id="search">
       <div class="searchbar center">
         <input
@@ -36,6 +35,7 @@ import VideoCard from "@/components/VideoCard";
 import HistoryCard from "@/components/HistoryCard";
 
 export default {
+  name: "Search",
   data() {
     return {
       videoId: null,

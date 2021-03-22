@@ -1,6 +1,6 @@
 <template>
     <div id="app">
-        <div id="nav" class="nav px-3">
+        <div id="nav" class="nav px-3 mb-16 shadow-sm flex justify-between">
             <div class="links">
                 <router-link
                     v-if="this.isSignedIn"
@@ -19,8 +19,10 @@
                     Search</router-link
                 >
             </div>
+            <div class="text-2xl pr-40">
+                Extended Mind
+            </div>
             <span class="btns">
-                <!-- <span class="btns" v-if="this.isGauthInit"> -->
                 <button
                     v-if="!this.isSignedIn"
                     @click="backedndLogin"
@@ -38,74 +40,8 @@
             </span>
         </div>
         <router-view />
-    </div>
+    </div>    
 </template>
-
-<style>
-.nav {
-    padding: 1rem;
-    display: flex;
-    border-color: black;
-    border-width: 1px;
-    justify-content: flex-start;
-    align-items: center;
-    background-color: rgb(255, 255, 255);
-    width: 100%;
-    position: fixed;
-    text-decoration: none;
-    top: 0;
-}
-/* .btns a {
-  display: inline-block;
-  cursor: pointer !important;
-  background-color: #383a3b !important;
-}
-.btns a:hover {
-  background-color: #111213 !important;
-} */
-.a:hover {
-    text-decoration: none;
-}
-.btn {
-    border-width: 1px;
-    border-color: black;
-    border-style: solid;
-    background-color: #413d41; /* Green */
-    border: none;
-    color: white;
-    padding: 20px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 4px 2px;
-    cursor: pointer;
-}
-.btns {
-    float: right;
-}
-.links {
-    float: left;
-}
-.right {
-    position: relative;
-}
-.nav-btn {
-    border-width: 1px;
-    border-color: black;
-    border-style: solid;
-    background-color: #413d41; /* Green */
-    border: none;
-    color: white;
-    padding: 20px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 4px 2px;
-    cursor: pointer;
-}
-</style>
 
 <script>
 const handleMessage = (e, callback) => {
@@ -158,3 +94,72 @@ export default {
     }
 };
 </script>
+
+
+<style>
+.nav {
+    padding: 1rem;
+    display: flex;
+    /* border-color: black; */
+    /* border-width: 1px; */
+    justify-content: flex-start;
+    align-items: center;
+    background-color: rgba(255, 255, 255);
+    width: 100%;
+    z-index: 1;
+    position: fixed;
+    top: 0;
+}
+/* .btns a {
+  display: inline-block;
+  cursor: pointer !important;
+  background-color: #383a3b !important;
+}
+.btns a:hover {
+  background-color: #111213 !important;
+} */
+.a:hover {
+    text-decoration: none;
+}
+.btn {
+    border-width: 1px;
+    border-color: black;
+    border-style: solid;
+    background-color: #413d41; /* Green */
+    border: none;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+.btns {
+    float: right;
+}
+.links {
+    float: left;
+}
+.right {
+    position: relative;
+    
+}
+.nav-btn {
+    border-width: 1px;
+    border-color: black;
+    border-style: solid;
+    background-color: #413d41; /* Green */
+    border: none;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+</style>
+

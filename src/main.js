@@ -8,6 +8,7 @@ import ApiService from "./services/api.service";
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import VueYoutube from "vue-youtube";
 import vueDebounce from 'vue-debounce'
+import './index.css'
 
 
 
