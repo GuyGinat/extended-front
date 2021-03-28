@@ -1,5 +1,7 @@
 <template>
-    <div class="video-card row">
+    <div
+        class="video-card row border-t-2 border-solid border-gray-100 w-full mx-auto"
+    >
         <div class="col col-md-4">
             <img v-bind:src="youtubeThumbnail" />
         </div>
@@ -37,7 +39,14 @@
                 </button>
             </div>
         </div>
-        <transition name="expand">
+        <transition
+                    enter-active-class="transition ease-out duration-500 transform"
+                    enter-class="opacity-0 scale-95"
+                    enter-to-class="opacity-100 scale-100"
+                    leave-active-class="transition ease-in duration-150 transform"
+                    leave-class="opacity-100 scale-100"
+                    leave-to-class="opacity-0 scale-95"
+                >
             <div
                 class="expand-container row"
                 v-if="expanded || expandedCaptions"
@@ -55,39 +64,37 @@
                         ref="youtube"
                     /> -->
                 </div>
-                <transition name="expand">
-                    <div v-if="expanded" class="col col-md-5 pl-4">
-                        <strong>Search Query Appearances</strong>
-                        <div class="findings-conatiner">
-                            <div
-                                class="finding-row row"
-                                v-for="finding in sortedHits"
-                                :key="finding._source.start"
-                            >
-                                <div class="col col-md-9">
-                                    {{ finding._source.text }}
-                                </div>
-                                <div class="col col-md-1">
-                                    <small>{{
-                                        secondsToHms(finding._source.start)
-                                    }}</small>
-                                </div>
-                                <div class="col col-md-2">
-                                    <button
-                                        type="button"
-                                        class="btn btn-sm btn-primary"
-                                        @click="
-                                            seekVideo(finding._source.start)
-                                        "
-                                    >
-                                        <!-- <font-awesome-icon icon="user-secret" /> -->
-                                        Play
-                                    </button>
-                                </div>
+
+                <div v-if="expanded" class="col col-md-5 pl-4">
+                    <strong>Search Query Appearances</strong>
+                    <div class="findings-conatiner">
+                        <div
+                            class="finding-row row"
+                            v-for="finding in sortedHits"
+                            :key="finding._source.start"
+                        >
+                            <div class="col col-md-9">
+                                {{ finding._source.text }}
+                            </div>
+                            <div class="col col-md-1">
+                                <small>{{
+                                    secondsToHms(finding._source.start)
+                                }}</small>
+                            </div>
+                            <div class="col col-md-2">
+                                <button
+                                    type="button"
+                                    class="btn btn-sm btn-primary"
+                                    @click="seekVideo(finding._source.start)"
+                                >
+                                    <!-- <font-awesome-icon icon="user-secret" /> -->
+                                    Play
+                                </button>
                             </div>
                         </div>
                     </div>
-                </transition>
+                </div>
+
                 <div v-if="expandedCaptions" class="col col-md-5 pl-3">
                     <strong>Video Captions</strong>
                     <div class="findings-conatiner col col-12">

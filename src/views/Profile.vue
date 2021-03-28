@@ -7,8 +7,8 @@
                 </div>
             </div>
         </div>
-        <div class="profile-options">
-            <div class="profile-options-box profile-tab p-4">
+        <div class="profile-options ">
+            <div class="profile-options-box profile-tab p-4 border-t-2 border-solid border-gray-100">
                 <h3 class="text-3xl mb-3">Info</h3>
                 <div class="row py-2">
                     <div class="col-md-3">
@@ -53,7 +53,7 @@
                         ></div>
                     </div>
                 </div>
-				<div class="row py-2">
+                <div class="row py-2">
                     <div class="col-md-3">
                         <label>Work On Trigger</label>
                     </div>
@@ -73,7 +73,7 @@
                 </div>
             </div>
         </div>
-        <div class="profile-options-box p-4">
+        <div class="profile-options-box p-4 border-t-2 border-solid border-gray-100">
             <h3 class="text-3xl mb-3">Blacklist</h3>
             <div class="flex justify-center" v-if="this.blacklist.length === 0">
                 <div class="text-center text-2xl w-2/3">
@@ -90,10 +90,7 @@
                         class="m-4 border-b-2 outline-none min-w-min text-xl"
                         placeholder="Enter url of site"
                     />
-                    <button
-                        @click="addToBlacklist"
-                        class="main-button"
-                    >
+                    <button @click="addToBlacklist" class="main-button">
                         Add
                     </button>
                 </div>
@@ -119,7 +116,7 @@
                 </div>
             </div>
         </div>
-        <div class="profile-options-box p-4">
+        <div class="profile-options-box p-4 border-t-2 border-solid border-gray-100">
             <h3 class="text-3xl mb-3">Whitelist</h3>
             <div
                 class="flex justify-center"
@@ -137,8 +134,8 @@
 
 <script>
 import moment from "moment";
-import HistoryCard from "../components/HistoryCard";
-import ApiService from "../services/api.service";
+import { isEqual } from "lodash/_equalObjects";
+import { deepDiffMapper } from "../utils/object.utils";
 
 export default {
     name: "Profile",
@@ -150,15 +147,69 @@ export default {
             whitelist: [],
             blacklistUrl: null,
             whitelistUrl: null,
-			triggerToggle: false,            
+            triggerToggle: false
         };
+    },
+    mounted() {
+		// Deep diff utility tester
+
+        let result = deepDiffMapper.map(
+            {
+                a: "i am unchanged",
+                b: "i am deleted",
+                e: {
+                    a: 1,
+                    b: false,
+                    c: null
+                },
+                f: [
+                    1,
+                    {
+                        a: "same",
+                        b: [
+                            {
+                                a: "same"
+                            },
+                            {
+                                d: "delete"
+                            }
+                        ]
+                    }
+                ],
+                g: new Date("2017.11.25")
+            },
+            {
+                a: "i am unchanged",
+                c: "i am created",
+                e: {
+                    a: "1",
+                    b: "",
+                    d: "created"
+                },
+                f: [
+                    {
+                        a: "same",
+                        b: [
+                            {
+                                a: "same"
+                            },
+                            {
+                                c: "create"
+                            }
+                        ]
+                    },
+                    1
+                ],
+                g: new Date("2017.11.25")
+            }
+        );
+        console.log(result);
     },
     created() {
         this.blacklist = this.$store.getters.user.blacklist || [];
         this.whitelist = this.$store.getters.user.whitelist || [];
-    },
-    components: {
-        HistoryCard
+        this.blacklistToggle =
+            this.$store.getters.users.is_blacklist_user || false;
     },
     computed: {
         user: function() {
@@ -169,20 +220,32 @@ export default {
                 this.user && this.user.first_name + " " + this.user.last_name
             );
         },
-        switch: function() {
-            return this.blacklistToggle;
+        userInfo: function() {
+            return {
+                blacklist: this.user.blacklist,
+                whitelist: this.user.whitelist,
+                is_blacklist_user: this.user.is_blacklist_user
+            };
+        },
+        changes: function() {
+            let u = {
+                blacklist: this.blacklist,
+                whitelist: this.whitelist,
+                is_blacklist_user: this.blacklistToggle
+            };
+            return JSON.stringify(u) === JSON.stringify(this.userInfo);
         }
     },
-    // async mounted() {
-    //     const { data } = await api.get("history/latest");
-    //     // this.user = this.$store.getters.user;
-    //     this.data = data;
-    // },
+    watch: {
+        userInfo: function() {
+            JSON.stringify(u) === JSON.stringify(this.userInfo);
+        }
+    },
     methods: {
         toggleBlacklist() {
             this.blacklistToggle = !this.blacklistToggle;
         },
-		toggleTrigger() {
+        toggleTrigger() {
             this.triggerToggle = !this.triggerToggle;
         },
         addToBlacklist() {

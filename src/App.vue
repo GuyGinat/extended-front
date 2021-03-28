@@ -133,7 +133,7 @@ export default {
     text-decoration: none;
     display: inline-block;
     font-size: 16px;
-    margin: 4px 2px;
+    margin: 2px 2px;
     cursor: pointer;
 }
 .btns {
@@ -158,7 +158,7 @@ export default {
     text-decoration: none;
     display: inline-block;
     font-size: 16px;
-    margin: 4px 2px;
+    margin: 0px 2px;
     cursor: pointer;
 }
 </style>

@@ -1,9 +1,9 @@
 <template>
-  <div class="history-card row">
+  <div class="history-card row border-t-2 border-solid border-gray-100">
     <div class="col col-md-4">
       <div class="screenshot">
         <img
-          class="screenshot"
+          class="flex items-center justify-center"
           v-if="
             data._source.metadata &&
               data._source.metadata.ogImage &&
@@ -12,7 +12,8 @@
           :src="data._source.metadata.ogImage.url"
         />
         <div
-          style="text-align: center; font-size: 18pt; margin-top: 85px"
+          class=""
+          style="text-align: center; font-size: 18pt"
           v-if="
             !data._source.metadata ||
               !data._source.metadata.ogImage ||
@@ -70,6 +71,9 @@ export default {
   width: 360px;
   height: 202px;
   border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   background-color: rgb(243, 243, 243);
   border: rgb(148, 148, 148) 1px solid;
   width: 100%;

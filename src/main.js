@@ -7,12 +7,10 @@ import VueAxios from "vue-axios";
 import ApiService from "./services/api.service";
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import VueYoutube from "vue-youtube";
-import vueDebounce from 'vue-debounce'
-import './index.css'
+import vueDebounce from "vue-debounce";
+import "./index.css";
 
-
-
-Vue.use(vueDebounce)
+Vue.use(vueDebounce);
 
 Vue.config.productionTip = false;
 
@@ -24,7 +22,7 @@ ApiService.init();
 Vue.use(require("vue-moment"));
 
 new Vue({
-  router,
-  store,
-  render: h => h(App)
+    router,
+    store,
+    render: h => h(App)
 }).$mount("#app");
