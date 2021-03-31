@@ -5,6 +5,7 @@
                 <div class="search-box flex flex-row justify-center">
                     <input
                         type="text"
+                        ref="search"
                         class=" rounded-r-none rounded-l-md w-1/3 text-base p-3 h-10 text-gray-900 border-gray-300 border-2 justify-items-center focus:border-gray-900 rounded-none"
                         placeholder="Search your history"
                         v-debounce:500ms="searchAll"
@@ -22,11 +23,12 @@
                 </div>
                 <transition
                     enter-active-class="transition ease-out duration-500 transform"
-                    enter-class="opacity-40 scale-50"
+                    enter-class="opacity-0 scale-100 -translate-y-6"
                     enter-to-class="opacity-100 scale-100"
-                    leave-active-class="transition ease-in duration-75 transform"
-                    leave-class="opacity-100 scale-100"
-                    leave-to-class="opacity-0 scale-95"
+                    leave-active-class="transition ease-out duration-1500 transform"
+                    leave-class="opacity-0 scale-100"
+                    leave-to-class="opacity-0 scale-100 -translate-y-3"
+                    move="transform ease-in-out duration-500"
                 >
                     <div
                         v-if="showAdvancedOptions"
@@ -74,24 +76,17 @@
                                 </div>
                             </div>
                             <div
-                                class="select py-3 px-4 text-sm flex items-center w-1/8 "
+                                class="select py-1 my-2  mx-2 text-sm flex items-center w-1/8 border-solid border-2 rounded-md main-button w-32 justify-center"
+                                @click="sortByTime"
                             >
                                 <label class="text-md font-normal my-auto">
-                                    Sort By Time
+                                    {{
+                                        sortedByTime
+                                            ? "Sort By Relevence"
+                                            : "Sort By Time"
+                                    }}
                                 </label>
-                                <div
-                                    class="w-5 h-5 flex items-center bg-gray-300 rounded-full p-1 ml-2"
-                                    :class="{ 'bg-pink-300': searchYoutube }"
-                                    @click="this.sortByTime"
-                                >
-                                    <div
-                                        class="bg-gray-50 w-3 h-3 rounded-full shadow-md "
-                                        :class="{
-                                            'bg-pink-200': searchYoutube
-                                        }"
-                                    ></div>
-                                </div>
-                            </div>                                                        
+                            </div>
                         </div>
                     </div>
                 </transition>
@@ -102,44 +97,49 @@
         <div class="card-container py-12 w-10/12 mx-auto">
             <div v-if="noResults">No results found</div>
             <transition-group
-                    enter-active-class="transition ease-out duration-500 transform translate-y-12"
-                    enter-class="opacity-40 scale-50"
-                    enter-to-class="opacity-100 scale-100"
-                    leave-active-class="transition ease-in duration-300 transform"
-                    leave-class="opacity-100 scale-100"
-                    leave-to-class="opacity-0 scale-95"
-                >
-            <div v-for="(card, index) in data" :key="card._id">
-                <div
-                    v-if="sortedByTime && data.length && index === 0"
-                    class="h-6 my-2"
-                >
-                    <p class="text-xl">
-                        {{ getUserDate(itemsDates[index]) }}
-                    </p>
+                enter-active-class="transition ease-out duration-500 transform"
+                enter-class="opacity-0 scale-100 -translate-y-6"
+                enter-to-class="opacity-100 scale-100"
+                leave-active-class="transition ease-out duration-1500 transform"
+                leave-class="opacity-0 scale-100"
+                leave-to-class="opacity-0 scale-100 -translate-y-3"
+                move="transform duration-3000"
+            >
+                <div v-for="(card, index) in data" :key="card._id">
+                    <div
+                        v-if="sortedByTime && data.length && index === 0"
+                        class="h-6 my-2"
+                    >
+                        <p class="text-xl">
+                            {{ getUserDate(itemsDates[index]) }}
+                        </p>
+                    </div>
+                    <div
+                        v-if="
+                            card._index == 'youtube-captions' && searchYoutube
+                        "
+                    >
+                        <video-card :data="card" />
+                    </div>
+                    <div v-if="card._index == 'history' && searchHistory">
+                        <history-card :data="card" />
+                    </div>
+                    <div
+                        v-if="
+                            sortedByTime &&
+                                index + 1 < data.length &&
+                                areDatesinDifferentDays(
+                                    itemsDates[index],
+                                    itemsDates[index + 1]
+                                )
+                        "
+                        class="h-6 my-6"
+                    >
+                        <p class="text-xl">
+                            {{ getUserDate(itemsDates[index + 1]) }}
+                        </p>
+                    </div>
                 </div>
-                <div v-if="card._index == 'youtube-captions' && searchYoutube">
-                    <video-card :data="card" />
-                </div>
-                <div v-if="card._index == 'history' && searchHistory">
-                    <history-card :data="card" />
-                </div>
-                <div
-                    v-if="
-                        sortedByTime &&
-                            index + 1 < data.length &&
-                            areDatesinDifferentDays(
-                                itemsDates[index],
-                                itemsDates[index + 1]
-                            )
-                    "
-                    class="h-6 my-6"
-                >
-                    <p class="text-xl">
-                        {{ getUserDate(itemsDates[index + 1]) }}
-                    </p>
-                </div>
-            </div>
             </transition-group>
         </div>
     </div>
@@ -250,12 +250,19 @@ export default {
             }
         },
         sortByTime() {
-            this.sortedByTime = true;
-            this.data = this.data.sort((a, b) => {
-                let aDate = a["_source"]["users"][0]["date"];
-                let bDate = b["_source"]["users"][0]["date"];
-                return bDate - aDate;
-            });
+            if (this.sortedByTime) {
+                this.data = this.data.sort((a, b) => {
+                    return b["_score"] - a["_score"];
+                });
+                this.sortedByTime = false;
+            } else {
+                this.data = this.data.sort((a, b) => {
+                    let aDate = a["_source"]["users"][0]["date"];
+                    let bDate = b["_source"]["users"][0]["date"];
+                    return bDate - aDate;
+                });
+                this.sortedByTime = true;
+            }
         },
         areDatesinDifferentDays(a, b) {
             let dayA = new Date(a);
@@ -265,6 +272,9 @@ export default {
         getUserDate(d) {
             let day = new Date(d);
             return day.toDateString();
+        },
+        focusSearch() {
+          this.$refs.search.focus()
         }
     },
     computed: {
@@ -293,8 +303,9 @@ export default {
                 return new Date(d["_source"]["users"][0]["date"]);
             });
         }
-    },
+    },    
     mounted() {
+        this.focusSearch()
         // When the user scrolls the page, execute myFunction
         window.onscroll = function() {
             makeSticky();
@@ -357,5 +368,51 @@ body {
 }
 .card-container {
     margin-top: 100px;
+}
+.main-button {
+    /* margin: 0.3rem; */
+    background: conic-gradient(
+        from -3.29deg at 100% -13%,
+        #ff6348 -8.32deg,
+        #ff02e6 11.63deg,
+        #ff6348 351.68deg,
+        #ff02e6 371.63deg
+    );
+    border-color: transparent;
+    color: white;
+    /* width: 6rem; */
+    /* height: 2rem; */
+    box-shadow: 0px 0px 5px rgba(255, 127, 80, 0.5);
+    border-radius: 5px;
+}
+.main-button:hover {
+    background: conic-gradient(
+        from -3.29deg at 100% -13%,
+        #fd9380 -8.32deg,
+        #fd37e9 11.63deg,
+        #fa846f 351.68deg,
+        #f830e4 371.63deg
+    );
+}
+.list-enter-active-class {
+    transition: ease-out;
+    transition-duration: 500ms;
+}
+.list-enter-class,
+.leave-to-class {
+    opacity: 0;
+    scale: 95;
+}
+.list-enter-to-class,
+.leave-class {
+    opacity: 100;
+    scale: 100;
+}
+.list-leave-active-class {
+    transition: ease-in;
+    transition-duration: 150ms;
+}
+.list-move {
+    transition: transform 1s;
 }
 </style>

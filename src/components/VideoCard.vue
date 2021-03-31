@@ -46,6 +46,7 @@
                     leave-active-class="transition ease-in duration-150 transform"
                     leave-class="opacity-100 scale-100"
                     leave-to-class="opacity-0 scale-95"
+                    move="transform ease-in-out duration-500"
                 >
             <div
                 class="expand-container row"
