@@ -141,75 +141,83 @@ export default {
     name: "Profile",
     data() {
         return {
-            data: [],
             blacklistToggle: false,
             blacklist: [],
             whitelist: [],
             blacklistUrl: null,
             whitelistUrl: null,
-            triggerToggle: false
+            triggerToggle: false,
+            lastSavedUser: {},
         };
     },
-    mounted() {
-		// Deep diff utility tester
+    // mounted() {
+	// 	// Deep diff utility tester
 
-        let result = deepDiffMapper.map(
-            {
-                a: "i am unchanged",
-                b: "i am deleted",
-                e: {
-                    a: 1,
-                    b: false,
-                    c: null
-                },
-                f: [
-                    1,
-                    {
-                        a: "same",
-                        b: [
-                            {
-                                a: "same"
-                            },
-                            {
-                                d: "delete"
-                            }
-                        ]
-                    }
-                ],
-                g: new Date("2017.11.25")
-            },
-            {
-                a: "i am unchanged",
-                c: "i am created",
-                e: {
-                    a: "1",
-                    b: "",
-                    d: "created"
-                },
-                f: [
-                    {
-                        a: "same",
-                        b: [
-                            {
-                                a: "same"
-                            },
-                            {
-                                c: "create"
-                            }
-                        ]
-                    },
-                    1
-                ],
-                g: new Date("2017.11.25")
-            }
-        );
-        console.log(result);
-    },
+    //     let result = deepDiffMapper.map(
+    //         {
+    //             a: "i am unchanged",
+    //             b: "i am deleted",
+    //             e: {
+    //                 a: 1,
+    //                 b: false,
+    //                 c: null
+    //             },
+    //             f: [
+    //                 1,
+    //                 {
+    //                     a: "same",
+    //                     b: [
+    //                         {
+    //                             a: "same"
+    //                         },
+    //                         {
+    //                             d: "delete"
+    //                         }
+    //                     ]
+    //                 }
+    //             ],
+    //             g: new Date("2017.11.25")
+    //         },
+    //         {
+    //             a: "i am unchanged",
+    //             c: "i am created",
+    //             e: {
+    //                 a: "1",
+    //                 b: "",
+    //                 d: "created"
+    //             },
+    //             f: [
+    //                 {
+    //                     a: "same",
+    //                     b: [
+    //                         {
+    //                             a: "same"
+    //                         },
+    //                         {
+    //                             c: "create"
+    //                         }
+    //                     ]
+    //                 },
+    //                 1
+    //             ],
+    //             g: new Date("2017.11.25")
+    //         }
+    //     );
+    //     console.log(result);
+    // },
     created() {
-        this.blacklist = this.$store.getters.user.blacklist || [];
-        this.whitelist = this.$store.getters.user.whitelist || [];
-        this.blacklistToggle =
-            this.$store.getters.users.is_blacklist_user || false;
+        let instance = this;
+        let blacklist = this.$store.getters.user.blacklist || [];
+        this.blacklist = blacklist;
+        let whitelist = this.$store.getters.user.whitelist || [];
+        this.whitelist = whitelist;
+        let blacklistToggle = this.$store.getters.users.is_blacklist_user || false;
+        this.blacklistToggle = blacklistToggle;
+        this.$set(this.lastSavedUser, 'lastSavedUser', {
+            blacklist,
+            whitelist,
+            blacklistToggle
+        })
     },
     computed: {
         user: function() {
@@ -229,11 +237,11 @@ export default {
         },
         changes: function() {
             let u = {
-                blacklist: this.blacklist,
-                whitelist: this.whitelist,
-                is_blacklist_user: this.blacklistToggle
+                blacklist: this.user.blacklist,
+                whitelist: this.user.whitelist,
+                blacklistToggle: this.blacklistToggle
             };
-            return JSON.stringify(u) === JSON.stringify(this.userInfo);
+            return deepDiffMapper.map(u, this.lastSavedUser);
         }
     },
     watch: {
