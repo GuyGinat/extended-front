@@ -1,5 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
+// import user from './modules/user';
 import apiService from "../services/api.service.js";
 import jwtService from "../services/jwt.service.js";
 
@@ -15,7 +16,6 @@ export default new Vuex.Store({
         error: {}
     },
     mutations: {
-
         // Login
         login_request(state) {
             state.userStatus = "loading";
@@ -33,7 +33,6 @@ export default new Vuex.Store({
             state.error = error;
         },
 
-        
         // Logout
         logout_request(state) {
             state.userStatus = "error";
@@ -46,7 +45,6 @@ export default new Vuex.Store({
             state.token = "";
         },
 
-
         // Error
         set_error(state, error) {
             state.error = error;
@@ -55,7 +53,6 @@ export default new Vuex.Store({
         error(state) {
             state.status = "error";
         },
-
 
         // Auth
         auth_request(state) {
@@ -67,27 +64,24 @@ export default new Vuex.Store({
         },
         auth_error(state) {
             state.status = "error";
-        },                
+        },
         auth_token_verified(state, user) {
             state.status = "success";
             state.user = user;
         },
 
-
         // Update User
-        update_user_request(state, user) {
+        update_user_request(state) {
             state.status = "loading";
         },
         update_user_success(state, user) {
             state.status = "success";
-            state.user = user;
+            state.user = user
         },
-        update_user_error(state, user) {
-            state.status = "success";
+        update_user_error(state) {
+            state.status = "error";
             state.user = {};
         },
-
-
 
         debug(state, data) {
             state.debug = data;
@@ -173,23 +167,41 @@ export default new Vuex.Store({
             });
         },
 
-        updateUser({ commit }, body) {
-            console.log(body)
-            let endpoint = body.endpoint
-            let doc = body.doc
+        updateUser({ commit, dispatch }, body) {
+            console.log(body);
             return new Promise((resolve, reject) => {
                 commit("update_user_request");
                 apiService
-                    .post(`users/${endpoint}`, doc)
+                    .post(`users/update`, body)
                     .then(result => {
-                        console.log(result)
-                        commit("update_user_success", result.data.user)
+                        dispatch("verifyToken")
                     })
+                    .then(res => resolve(res))
                     .catch(err => {
-                        // commit("update_user_error")
+                        commit("error");
+                        commit("update_user_error");
+                        reject(err);
                     });
             });
-        },
+        }
+
+        // updateUser({ commit }, body) {
+        //     console.log(body)
+        //     let endpoint = body.endpoint
+        //     let doc = body.doc
+        //     return new Promise((resolve, reject) => {
+        //         commit("update_user_request");
+        //         apiService
+        //             .post(`users/${endpoint}`, doc)
+        //             .then(result => {
+        //                 console.log(result)
+        //                 commit("update_user_success", result.data.user)
+        //             })
+        //             .catch(err => {
+        //                 // commit("update_user_error")
+        //             });
+        //     });
+        // },
     },
     getters: {
         isLoggedIn: state => !!state.token,

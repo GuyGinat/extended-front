@@ -1,5 +1,23 @@
 <template>
     <div class="container center-all emp-profile">
+        <transition
+            enter-active-class="transition ease-out duration-500 transform"
+            enter-class="opacity-0 scale-100 -translate-y-6"
+            enter-to-class="opacity-100 scale-100"
+            leave-active-class="transition ease-out duration-1500 transform"
+            leave-class="opacity-0 scale-100"
+            leave-to-class="opacity-0 scale-100 -translate-y-3"
+            move="transform ease-in-out duration-500"
+        >
+            <div
+                v-if="changes"
+                class="fixed text-center main-button text-white px-3 py-1 rounded-3xl rounded-br-xl rounded-tl-xl top-24 right-24 shadow-md transition w-36"
+            >
+                <button @click="saveChanges()">
+                    Save Changes
+                </button>
+            </div>
+        </transition>
         <div class="row">
             <div class="col-md-12 mt-6">
                 <div class="profile-img">
@@ -8,7 +26,9 @@
             </div>
         </div>
         <div class="profile-options ">
-            <div class="profile-options-box profile-tab p-4 border-t-2 border-solid border-gray-100">
+            <div
+                class="profile-options-box profile-tab p-4 border-t-2 border-solid border-gray-100"
+            >
                 <h3 class="text-3xl mb-3">Info</h3>
                 <div class="row py-2">
                     <div class="col-md-3">
@@ -73,7 +93,9 @@
                 </div>
             </div>
         </div>
-        <div class="profile-options-box p-4 border-t-2 border-solid border-gray-100">
+        <div
+            class="profile-options-box p-4 border-t-2 border-solid border-gray-100"
+        >
             <h3 class="text-3xl mb-3">Blacklist</h3>
             <div class="flex justify-center" v-if="this.blacklist.length === 0">
                 <div class="text-center text-2xl w-2/3">
@@ -116,7 +138,9 @@
                 </div>
             </div>
         </div>
-        <div class="profile-options-box p-4 border-t-2 border-solid border-gray-100">
+        <div
+            class="profile-options-box p-4 border-t-2 border-solid border-gray-100"
+        >
             <h3 class="text-3xl mb-3">Whitelist</h3>
             <div
                 class="flex justify-center"
@@ -134,8 +158,8 @@
 
 <script>
 import moment from "moment";
-import { isEqual } from "lodash/_equalObjects";
-import { deepDiffMapper } from "../utils/object.utils";
+import { objectify, getObjectDiff } from "../utils/object.utils";
+import { isEqual, reduce } from "lodash";
 
 export default {
     name: "Profile",
@@ -146,12 +170,16 @@ export default {
             whitelist: [],
             blacklistUrl: null,
             whitelistUrl: null,
-            triggerToggle: false,
-            lastSavedUser: {},
+            triggerToggle: false
+            // lastSavedUser: {
+            //     blacklist: null,
+            //     whitelist: null,
+            //     blacklistToggle: null
+            // },
         };
     },
     // mounted() {
-	// 	// Deep diff utility tester
+    // 	// Deep diff utility tester
 
     //     let result = deepDiffMapper.map(
     //         {
@@ -206,18 +234,10 @@ export default {
     //     console.log(result);
     // },
     created() {
-        let instance = this;
-        let blacklist = this.$store.getters.user.blacklist || [];
-        this.blacklist = blacklist;
-        let whitelist = this.$store.getters.user.whitelist || [];
-        this.whitelist = whitelist;
-        let blacklistToggle = this.$store.getters.users.is_blacklist_user || false;
-        this.blacklistToggle = blacklistToggle;
-        this.$set(this.lastSavedUser, 'lastSavedUser', {
-            blacklist,
-            whitelist,
-            blacklistToggle
-        })
+        this.blacklist = this.$store.getters.user.blacklist || [];
+        this.whitelist = this.$store.getters.user.whitelist || [];
+        this.blacklistToggle =
+            this.$store.getters.user.is_blacklist_user || false;
     },
     computed: {
         user: function() {
@@ -235,13 +255,29 @@ export default {
                 is_blacklist_user: this.user.is_blacklist_user
             };
         },
+        savedBlacklist: function() {
+            return this.$store.getters.user.blacklist || [];
+        },
+        savedWhitelist: function() {
+            return this.$store.getters.user.whitelist || [];
+        },
+        savedBlacklistUser: function() {
+            return this.$store.getters.user.is_blacklist_user || false;
+        },
         changes: function() {
-            let u = {
-                blacklist: this.user.blacklist,
-                whitelist: this.user.whitelist,
-                blacklistToggle: this.blacklistToggle
+            let savedUser = {
+                blacklist: this.savedBlacklist,
+                whitelist: this.savedWhitelist,
+                blacklistToggle: this.savedBlacklistUser
             };
-            return deepDiffMapper.map(u, this.lastSavedUser);
+
+            let currentUser = objectify({
+                blacklist: this.blacklist,
+                whitelist: this.whitelist,
+                blacklistToggle: this.blacklistToggle
+            });
+
+            return !isEqual(savedUser, currentUser);
         }
     },
     watch: {
@@ -272,6 +308,35 @@ export default {
                 endpoint: "remove-from-blacklist",
                 doc: { blacklistWebsite: website }
             });
+        },
+        saveChanges() {
+            console.log("saving changes");
+
+            let changes = {};
+
+            let blacklistChanged =
+                (this.savedBlacklist || []) === this.blacklist
+                    ? null
+                    : this.blacklist;
+            if (blacklistChanged) {
+                changes['blacklist'] = blacklistChanged
+            }
+            let whitelistChanged =
+                (this.savedWhitelist || []) === this.whitelist
+                    ? null
+                    : this.whitelist;
+            if (whitelistChanged) {
+                changes['whitelist'] = whitelistChanged
+            }
+            let blacklistUserChanged =
+                (this.savedBlacklistUser || []) === this.blacklistToggle
+                    ? null
+                    : this.blacklistToggle;            
+            if (blacklistUserChanged !== null) {
+                changes['is_blacklist_user'] = blacklistUserChanged
+            }
+            console.log(`Sending changes:${changes}`)
+            this.$store.dispatch("updateUser", changes);
         }
     },
     filters: {
