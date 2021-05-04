@@ -75,7 +75,7 @@
                 </div>
                 <div class="row py-2">
                     <div class="col-md-3">
-                        <label>Work On Trigger</label>
+                        <label>Session Based</label>
                     </div>
                     <!-- <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault"> -->
                     <div
