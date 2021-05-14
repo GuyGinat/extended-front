@@ -20,7 +20,7 @@
                 >
             </div>
             <div class="text-2xl pr-40">
-                Extended Mind
+                Super Session
             </div>
             <span class="btns">
                 <button
