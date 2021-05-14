@@ -151,6 +151,7 @@ import api from "../services/api.service";
 import youtubeThumbnail from "youtube-thumbnail";
 import VideoCard from "@/components/VideoCard";
 import HistoryCard from "@/components/HistoryCard";
+import { mapGetters, mapActions } from 'vuex';
 
 export default {
     name: "Search",
@@ -173,6 +174,7 @@ export default {
         HistoryCard
     },
     methods: {
+        ...mapActions(['searchAll']),
         search() {
             axios
                 .get("http://localhost:3001/yt/captions?q=" + this.query)
@@ -278,6 +280,7 @@ export default {
         }
     },
     computed: {
+        ...mapGetters(['searchResults']),
         player() {
             return this.$refs.youtube.player;
         },

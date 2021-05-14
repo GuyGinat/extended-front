@@ -5,7 +5,7 @@
         </div>
 
         <div class="grid grid-cols-3 grid-gap-4">
-            <div v-for="record in records" :key="record._id">
+            <div v-for="record in latest" :key="record._id">
                 <div class="record-card mx-2 p-2 mt-6">
                     <div class="text-xl">{{ record.title }}</div>
                     <div>{{ record.dateVisited | moment }}</div>
@@ -52,26 +52,13 @@
 
 <script>
 import moment from "moment";
-import ApiService from "../services/api.service";
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 
 export default {
     name: "HomeSignedIn",
     props: {},
     data() {
-        return {
-            records: [
-                // TEMPLATE FOR TESTING
-                // {
-                //     _id: 1,
-                //     title: "example title",
-                //     rawText:
-                //         "This is some written raw text of some history record...",
-                //     dateVisited: 1606582064215,
-                //     link: "https://github.com/sahat/hackathon-starter"
-                // }
-            ],
-        };
+        return { };
     },
     filters: {
         moment: function (date) {
@@ -79,22 +66,10 @@ export default {
         },
     },
     created() {
-        ApiService.get("history", "latest")
-            .then((res) => {
-                let data = res.data.map((r) => {
-                    return {
-                        ...r._source,
-                        rawText: r._source.rawText.slice(0, 160) + "...",
-                        _id: r._id,
-                    };
-                });
-                this.records = data;
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+        this.getLatest()
     },
     methods: {
+        ...mapActions(['getLatest']),
         goToSite: function(site) {
             window.open(site)
         },
@@ -102,7 +77,9 @@ export default {
             console.log(doc)
         }
     },
-    computed: mapGetters(['latest'])
+    computed: {
+        ...mapGetters(['latest'])
+    }
 };
 </script>
 
