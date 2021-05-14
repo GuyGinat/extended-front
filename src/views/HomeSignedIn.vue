@@ -53,6 +53,7 @@
 <script>
 import moment from "moment";
 import ApiService from "../services/api.service";
+import { mapGetters } from 'vuex';
 
 export default {
     name: "HomeSignedIn",
@@ -101,6 +102,7 @@ export default {
             console.log(doc)
         }
     },
+    computed: mapGetters(['latest'])
 };
 </script>
 
