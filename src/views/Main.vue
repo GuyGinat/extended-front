@@ -77,7 +77,7 @@
                             </div>
                             <div
                                 class="select py-1 my-2  mx-2 text-sm flex items-center w-1/8 border-solid border-2 rounded-md main-button w-32 justify-center"
-                                @click="sortByTime"
+                                @click="sortResults"
                             >
                                 <label class="text-md font-normal my-auto">
                                     {{
@@ -95,7 +95,7 @@
 
         <!-- serach result list -->
         <div class="card-container py-12 w-10/12 mx-auto">
-            <div v-if="noResults">No results found</div>
+            <div v-if="noSearchReasults">No results found</div>
             <transition-group
                 enter-active-class="transition ease-out duration-500 transform"
                 enter-class="opacity-0 scale-100 -translate-y-6"
@@ -105,9 +105,9 @@
                 leave-to-class="opacity-0 scale-100 -translate-y-3"
                 move="transform duration-3000"
             >
-                <div v-for="(card, index) in data" :key="card._id">
+                <div v-for="(card, index) in searchResults" :key="card._id">
                     <div
-                        v-if="sortedByTime && data.length && index === 0"
+                        v-if="sortedByTime && searchResults.length && index === 0"
                         class="h-6 my-2"
                     >
                         <p class="text-xl">
@@ -127,7 +127,7 @@
                     <div
                         v-if="
                             sortedByTime &&
-                                index + 1 < data.length &&
+                                index + 1 < searchResults.length &&
                                 areDatesinDifferentDays(
                                     itemsDates[index],
                                     itemsDates[index + 1]
@@ -146,11 +146,10 @@
 </template>
 
 <script>
-import axios from "axios";
-import api from "../services/api.service";
 import youtubeThumbnail from "youtube-thumbnail";
 import VideoCard from "@/components/VideoCard";
 import HistoryCard from "@/components/HistoryCard";
+import { mapGetters, mapActions } from 'vuex';
 
 export default {
     name: "Search",
@@ -164,7 +163,7 @@ export default {
             searchHistory: true,
             searchYoutube: true,
             showAdvancedOptions: false,
-            sortedByTime: false
+            // sortedByTime: false
             // focusQuery: false
         };
     },
@@ -173,42 +172,8 @@ export default {
         HistoryCard
     },
     methods: {
-        search() {
-            axios
-                .get("http://localhost:3001/yt/captions?q=" + this.query)
-                .then(response => {
-                    this.data = response.data;
-                    if (response.data.length === 0) {
-                        this.noResults = true;
-                    } else {
-                        this.noResults = false;
-                    }
-                    this.videos = response.data.map(v => {
-                        this.parseYoutubeTitle(v._source.title);
-                        return {
-                            id: v._source.id,
-                            title: this.parseYoutubeTitle(v._source.title),
-                            markersLength:
-                                v.inner_hits.timedText.hits.hits.length,
-                            currentMarker: 0,
-                            markers: v.inner_hits.timedText.hits.hits
-                                .map(m => {
-                                    return parseInt(m._source.start);
-                                })
-                                .sort(function(a, b) {
-                                    //TODO: sort in elastic not in client (? maybe its better)
-                                    return a - b;
-                                })
-                        };
-                    });
-                });
-        },
-        async searchAll() {
-            const { data } = await api.get(
-                `historyOld?q=${this.query}&u=${this.$store.getters.userId}`
-            );
-            this.data = data;
-        },
+        ...mapActions(['searchAll', 'sortResults']),
+       
         changeVideo(video) {
             this.videoId = video.id;
             this.currentVideo = video;
@@ -249,21 +214,21 @@ export default {
                 return title;
             }
         },
-        sortByTime() {
-            if (this.sortedByTime) {
-                this.data = this.data.sort((a, b) => {
-                    return b["_score"] - a["_score"];
-                });
-                this.sortedByTime = false;
-            } else {
-                this.data = this.data.sort((a, b) => {
-                    let aDate = a["_source"]["users"][0]["date"];
-                    let bDate = b["_source"]["users"][0]["date"];
-                    return bDate - aDate;
-                });
-                this.sortedByTime = true;
-            }
-        },
+        // sortByTime() {
+        //     if (this.sortedByTime) {
+        //         this.searchResults = this.searchResults.sort((a, b) => {
+        //             return b["_score"] - a["_score"];
+        //         });
+        //         this.sortedByTime = false;
+        //     } else {
+        //         this.searchResults = this.searchResults.sort((a, b) => {
+        //             let aDate = a["_source"]["users"][0]["date"];
+        //             let bDate = b["_source"]["users"][0]["date"];
+        //             return bDate - aDate;
+        //         });
+        //         this.sortedByTime = true;
+        //     }
+        // },
         areDatesinDifferentDays(a, b) {
             let dayA = new Date(a);
             let dayB = new Date(b);
@@ -278,6 +243,7 @@ export default {
         }
     },
     computed: {
+        ...mapGetters(['searchResults', 'noSearchReasults', 'sortedByTime', 'itemsDates']),
         player() {
             return this.$refs.youtube.player;
         },
@@ -298,11 +264,6 @@ export default {
                 return this.data;
             }
         },
-        itemsDates() {
-            return this.data.map(d => {
-                return new Date(d["_source"]["users"][0]["date"]);
-            });
-        }
     },    
     mounted() {
         this.focusSearch()
@@ -315,7 +276,7 @@ export default {
             setTimeout(() => {
                 this.query = this.$route.query.q;
                 this.searchAll();
-            }, 500);
+            }, 800);
         }
         // Get the navbar
         var navbar = document.getElementById("search");

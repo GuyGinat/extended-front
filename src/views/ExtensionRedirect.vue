@@ -1,5 +1,5 @@
 <template>
-    <h1>Welcome to Extended Mind!</h1>
+    <h1>Welcome to Super Session!</h1>
 </template>
 
 <script>

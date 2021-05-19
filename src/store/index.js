@@ -3,6 +3,7 @@ import Vuex from "vuex";
 // import user from './modules/user';
 import apiService from "../services/api.service.js";
 import jwtService from "../services/jwt.service.js";
+import search from "./modules/search";
 
 Vue.use(Vuex);
 
@@ -76,7 +77,7 @@ export default new Vuex.Store({
         },
         update_user_success(state, user) {
             state.status = "success";
-            state.user = user
+            state.user = user;
         },
         update_user_error(state) {
             state.status = "error";
@@ -174,7 +175,7 @@ export default new Vuex.Store({
                 apiService
                     .post(`users/update`, body)
                     .then(result => {
-                        dispatch("verifyToken")
+                        dispatch("verifyToken");
                     })
                     .then(res => resolve(res))
                     .catch(err => {
@@ -210,5 +211,5 @@ export default new Vuex.Store({
         userId: state => state.user.id,
         error: state => state.error
     },
-    modules: {}
+    modules: { search }
 });

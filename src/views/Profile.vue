@@ -13,9 +13,7 @@
                 v-if="changes"
                 class="fixed text-center main-button text-white px-3 py-1 rounded-3xl rounded-br-xl rounded-tl-xl top-24 right-24 shadow-md transition w-36"
             >
-                <button @click="saveChanges()">
-                    Save Changes
-                </button>
+                <button @click="saveChanges()">Save Changes</button>
             </div>
         </transition>
         <div class="row">
@@ -25,9 +23,9 @@
                 </div>
             </div>
         </div>
-        <div class="profile-options ">
+        <div class="profile-options">
             <div
-                class="profile-options-box profile-tab p-4 border-t-2 border-solid border-gray-100"
+                class="profile-options-box w-full profile-tab p-4 border-t-2 border-solid border-gray-100"
             >
                 <h3 class="text-3xl mb-3">Info</h3>
                 <div class="row py-2">
@@ -68,14 +66,14 @@
                         <div
                             class="bg-gray-50 w-4 h-4 rounded-full shadow-md transform duration-300 ease-in-out"
                             :class="{
-                                'translate-x-6 bg-gray-900': blacklistToggle
+                                'translate-x-6 bg-gray-900': blacklistToggle,
                             }"
                         ></div>
                     </div>
                 </div>
                 <div class="row py-2">
                     <div class="col-md-3">
-                        <label>Work On Trigger</label>
+                        <label>Session Based</label>
                     </div>
                     <!-- <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault"> -->
                     <div
@@ -86,70 +84,77 @@
                         <div
                             class="bg-gray-50 w-4 h-4 rounded-full shadow-md transform duration-300 ease-in-out"
                             :class="{
-                                'translate-x-6 bg-pink-700': triggerToggle
+                                'translate-x-6 bg-pink-700': triggerToggle,
                             }"
                         ></div>
                     </div>
                 </div>
             </div>
         </div>
-        <div
-            class="profile-options-box p-4 border-t-2 border-solid border-gray-100"
-        >
-            <h3 class="text-3xl mb-3">Blacklist</h3>
-            <div class="flex justify-center" v-if="this.blacklist.length === 0">
-                <div class="text-center text-2xl w-2/3">
-                    There are no sites currently in your blacklist, add here or
-                    through the extension in order to block being saved to your
-                    user.
-                </div>
-            </div>
-            <div v-else class="w-full">
-                <div class="flex ml-auto pb-8 justify-between items-baseline">
-                    <input
-                        type="text"
-                        v-model="blacklistUrl"
-                        class="m-4 border-b-2 outline-none min-w-min text-xl"
-                        placeholder="Enter url of site"
-                    />
-                    <button @click="addToBlacklist" class="main-button">
-                        Add
-                    </button>
-                </div>
+        <div class="grid grid-cols-2 gap-8">
+            <div
+                class="profile-options-box p-4 border-t-2 border-solid border-gray-100"
+            >
+                <h3 class="text-3xl mb-3">Blacklist</h3>
                 <div
-                    class="flex flex-row flex-1"
-                    v-for="b in blacklist"
-                    :key="b"
+                    class="flex justify-center"
+                    v-if="this.blacklist.length === 0"
                 >
-                    <p
-                        class="text-gray-700 text-xl m-4 hover:text-gray-400 border-gray-200 border-b-2"
+                    <div class="text-center text-2xl w-2/3">
+                        There are no sites currently in your blacklist, add here
+                        or through the extension in order to block being saved
+                        to your user.
+                    </div>
+                </div>
+                <div v-else class="w-full">
+                    <div
+                        class="flex ml-auto pb-8 justify-between items-baseline"
                     >
-                        {{ b }}
-                    </p>
-                    <div class="flex ml-auto items-center">
-                        <!-- <button class="main-button">Link</button> -->
-                        <button
-                            @click="removeFromBlacklist(b)"
-                            class="main-button"
-                        >
-                            Remove
+                        <input
+                            type="text"
+                            v-model="blacklistUrl"
+                            class="m-4 border-b-2 outline-none min-w-min text-xl"
+                            placeholder="Enter url of site"
+                        />
+                        <button @click="addToBlacklist" class="main-button">
+                            Add
                         </button>
+                    </div>
+                    <div
+                        class="flex flex-row flex-1"
+                        v-for="b in blacklist"
+                        :key="b"
+                    >
+                        <p
+                            class="text-gray-700 text-xl m-4 hover:text-gray-400 border-gray-200 border-b-2 cursor-pointer"
+                        >
+                            {{ b }}
+                        </p>
+                        <div class="flex ml-auto items-center">
+                            <!-- <button class="main-button">Link</button> -->
+                            <button
+                                @click="removeFromBlacklist(b)"
+                                class="main-button"
+                            >
+                                Remove
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div
-            class="profile-options-box p-4 border-t-2 border-solid border-gray-100"
-        >
-            <h3 class="text-3xl mb-3">Whitelist</h3>
             <div
-                class="flex justify-center"
-                v-if="!this.whitelist || this.whitelist.length === 0"
+                class="profile-options-box p-4 border-t-2 border-solid border-gray-100"
             >
-                <div class="text-center text-2xl w-2/3">
-                    There are no sites currently in your whitelist, add here or
-                    through the extension in order to allow only certain sites
-                    to be saved to your user.
+                <h3 class="text-3xl mb-3">Whitelist</h3>
+                <div
+                    class="flex justify-center"
+                    v-if="!this.whitelist || this.whitelist.length === 0"
+                >
+                    <div class="text-center text-2xl w-2/3">
+                        There are no sites currently in your whitelist, add here
+                        or through the extension in order to allow only certain
+                        sites to be saved to your user.
+                    </div>
                 </div>
             </div>
         </div>
@@ -157,6 +162,8 @@
 </template>
 
 <script>
+// @ts-nocheck
+
 import moment from "moment";
 import { objectify, getObjectDiff } from "../utils/object.utils";
 import { isEqual, reduce } from "lodash";
@@ -170,69 +177,9 @@ export default {
             whitelist: [],
             blacklistUrl: null,
             whitelistUrl: null,
-            triggerToggle: false
-            // lastSavedUser: {
-            //     blacklist: null,
-            //     whitelist: null,
-            //     blacklistToggle: null
-            // },
+            triggerToggle: false,
         };
     },
-    // mounted() {
-    // 	// Deep diff utility tester
-
-    //     let result = deepDiffMapper.map(
-    //         {
-    //             a: "i am unchanged",
-    //             b: "i am deleted",
-    //             e: {
-    //                 a: 1,
-    //                 b: false,
-    //                 c: null
-    //             },
-    //             f: [
-    //                 1,
-    //                 {
-    //                     a: "same",
-    //                     b: [
-    //                         {
-    //                             a: "same"
-    //                         },
-    //                         {
-    //                             d: "delete"
-    //                         }
-    //                     ]
-    //                 }
-    //             ],
-    //             g: new Date("2017.11.25")
-    //         },
-    //         {
-    //             a: "i am unchanged",
-    //             c: "i am created",
-    //             e: {
-    //                 a: "1",
-    //                 b: "",
-    //                 d: "created"
-    //             },
-    //             f: [
-    //                 {
-    //                     a: "same",
-    //                     b: [
-    //                         {
-    //                             a: "same"
-    //                         },
-    //                         {
-    //                             c: "create"
-    //                         }
-    //                     ]
-    //                 },
-    //                 1
-    //             ],
-    //             g: new Date("2017.11.25")
-    //         }
-    //     );
-    //     console.log(result);
-    // },
     created() {
         this.blacklist = this.$store.getters.user.blacklist || [];
         this.whitelist = this.$store.getters.user.whitelist || [];
@@ -240,50 +187,50 @@ export default {
             this.$store.getters.user.is_blacklist_user || false;
     },
     computed: {
-        user: function() {
+        user: function () {
             return this.$store.getters.user;
         },
-        userName: function() {
+        userName: function () {
             return (
                 this.user && this.user.first_name + " " + this.user.last_name
             );
         },
-        userInfo: function() {
+        userInfo: function () {
             return {
                 blacklist: this.user.blacklist,
                 whitelist: this.user.whitelist,
-                is_blacklist_user: this.user.is_blacklist_user
+                is_blacklist_user: this.user.is_blacklist_user,
             };
         },
-        savedBlacklist: function() {
+        savedBlacklist: function () {
             return this.$store.getters.user.blacklist || [];
         },
-        savedWhitelist: function() {
+        savedWhitelist: function () {
             return this.$store.getters.user.whitelist || [];
         },
-        savedBlacklistUser: function() {
+        savedBlacklistUser: function () {
             return this.$store.getters.user.is_blacklist_user || false;
         },
-        changes: function() {
+        changes: function () {
             let savedUser = {
                 blacklist: this.savedBlacklist,
                 whitelist: this.savedWhitelist,
-                blacklistToggle: this.savedBlacklistUser
+                blacklistToggle: this.savedBlacklistUser,
             };
 
             let currentUser = objectify({
                 blacklist: this.blacklist,
                 whitelist: this.whitelist,
-                blacklistToggle: this.blacklistToggle
+                blacklistToggle: this.blacklistToggle,
             });
 
             return !isEqual(savedUser, currentUser);
-        }
+        },
     },
     watch: {
-        userInfo: function() {
+        userInfo: function () {
             JSON.stringify(u) === JSON.stringify(this.userInfo);
-        }
+        },
     },
     methods: {
         toggleBlacklist() {
@@ -296,18 +243,19 @@ export default {
             console.log(this.blacklistUrl);
             this.$store.dispatch("updateUser", {
                 endpoint: "add-to-blacklist",
-                doc: { blacklistWebsite: this.blacklistUrl }
+                doc: { blacklistWebsite: this.blacklistUrl },
             });
-            this.blacklist = [...this.blacklist, this.blacklistUrl];
+            this.blacklist = [this.blacklistUrl, ...this.blacklist];
             this.blacklistUrl = null;
         },
         removeFromBlacklist(website) {
+            this.blacklist = this.blacklist.filter(w => w !== website)
             console.log(website);
-            website += "";
-            this.$store.dispatch("updateUser", {
-                endpoint: "remove-from-blacklist",
-                doc: { blacklistWebsite: website }
-            });
+            // website += "";
+            // this.$store.dispatch("updateUser", {
+            //     endpoint: "remove-from-blacklist",
+            //     doc: { blacklistWebsite: website },
+            // });
         },
         saveChanges() {
             console.log("saving changes");
@@ -319,31 +267,31 @@ export default {
                     ? null
                     : this.blacklist;
             if (blacklistChanged) {
-                changes['blacklist'] = blacklistChanged
+                changes["blacklist"] = blacklistChanged;
             }
             let whitelistChanged =
                 (this.savedWhitelist || []) === this.whitelist
                     ? null
                     : this.whitelist;
             if (whitelistChanged) {
-                changes['whitelist'] = whitelistChanged
+                changes["whitelist"] = whitelistChanged;
             }
             let blacklistUserChanged =
                 (this.savedBlacklistUser || []) === this.blacklistToggle
                     ? null
-                    : this.blacklistToggle;            
+                    : this.blacklistToggle;
             if (blacklistUserChanged !== null) {
-                changes['is_blacklist_user'] = blacklistUserChanged
+                changes["is_blacklist_user"] = blacklistUserChanged;
             }
-            console.log(`Sending changes:${changes}`)
+            console.log(`Sending changes:${changes}`);
             this.$store.dispatch("updateUser", changes);
-        }
+        },
     },
     filters: {
-        moment: function(date) {
+        moment: function (date) {
             return moment(date).format("MM/DD/YY, h:mm");
-        }
-    }
+        },
+    },
 };
 </script>
 
