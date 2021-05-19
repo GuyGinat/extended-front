@@ -5,14 +5,18 @@ const state = {
     searchResults: [],
     videoSearchResults: [],
     latestHistory: [],
-    noSearchReasults: false
+    noSearchReasults: false,
+    sortedByTime: false,
+    itemsDates: [],
 };
 
 const getters = {
-    search: (state) => state.searchResults,
-    videos: (state) => state.videoSearchResults,
-    noResults: (state) => state.noSearchReasults,
-    latest: (state) => state.latestHistory,
+    searchResults: (state) => state.searchResults,
+    videoSearchResults: (state) => state.videoSearchResults,
+    noSearchReasults: (state) => state.noSearchReasults,
+    latestHistory: (state) => state.latestHistory,
+    sortedByTime: (state) => state.sortedByTime,
+    itemsDates: (state) => state.itemsDates,
 };
 
 const actions = {
@@ -52,9 +56,30 @@ const actions = {
     },
 
     async searchAll({ commit }, query) {
-        let { data } = await api.get(`historyOld?q=${query}&u=${this.$store.getters.userId}`)
+        commit('clearSearch')
+        let { data } = await api.get(`search`, `all?q=${query}`)
         commit('setSearchResults', data)
-    } 
+    },
+    
+    sortResults({ commit }) {
+        let results
+        if (state.sortedByTime) {
+            results = state.searchResults.sort((a, b) => {
+                return b["_score"] - a["_score"];
+            });
+            commit('sort', {sortedByTime: false, results: results})
+        } else {
+            results = state.searchResults.sort((a, b) => {
+                // TODO: fix this to the commented section when deploying
+                let aDate = Array.isArray(a["_source"]["users"]) ? a["_source"]["users"][0]["date"] : a["_source"]["users"]["date"]
+                let bDate = Array.isArray(b["_source"]["users"]) ? b["_source"]["users"][0]["date"] : b["_source"]["users"]["date"]
+                // let aDate = a["_source"]["users"][0]["date"];
+                // let bDate = b["_source"]["users"][0]["date"];
+                return aDate - bDate;
+            });
+            commit('sort', {sortedByTime: true, results: results})
+        }
+    }
 };
 
 const mutations = {
@@ -63,10 +88,28 @@ const mutations = {
         state.videoSearchResults = videos;
         state.noSearchReasults = videos.length === 0;
     },
+    clearSearch: (state) => {
+        state.sortedByTime = false
+        state.searchResults = []
+        state.itemsDates = []
+    },
     setSearchResults: (state, searchResults) => {
         state.searchResults = searchResults;
+        state.itemsDates = searchResults.map(d => {
+            console.log(d["_source"]["users"])
+            if (Array.isArray(d["_source"]["users"])){
+                return new Date(d["_source"]["users"][0]["date"]);
+            } else {
+                console.log(d["_source"]["users"]["date"])
+                return new Date(d["_source"]["users"]["date"]);
+            }
+        });
         state.noSearchReasults = searchResults.length === 0;
-    }
+    },
+    sort: (state, payload) => {
+        state.sortedByTime = payload.sortedByTime;
+        state.searchResults = payload.results;
+    },
 };
 
 export default {

@@ -77,7 +77,7 @@ export default new Vuex.Store({
         },
         update_user_success(state, user) {
             state.status = "success";
-            state.user = user
+            state.user = user;
         },
         update_user_error(state) {
             state.status = "error";
@@ -175,7 +175,7 @@ export default new Vuex.Store({
                 apiService
                     .post(`users/update`, body)
                     .then(result => {
-                        dispatch("verifyToken")
+                        dispatch("verifyToken");
                     })
                     .then(res => resolve(res))
                     .catch(err => {

@@ -5,7 +5,7 @@
         </div>
 
         <div class="grid grid-cols-3 grid-gap-4">
-            <div v-for="record in latest" :key="record._id">
+            <div v-for="record in latestHistory" :key="record._id">
                 <div class="record-card mx-2 p-2 mt-6">
                     <div class="text-xl">{{ record.title }}</div>
                     <div>{{ record.dateVisited | moment }}</div>
@@ -78,7 +78,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters(['latest'])
+        ...mapGetters(['latestHistory'])
     }
 };
 </script>
