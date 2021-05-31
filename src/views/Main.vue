@@ -6,7 +6,7 @@
                     <input
                         type="text"
                         ref="search"
-                        class=" rounded-r-none rounded-l-md w-1/3 text-base p-3 h-10 text-gray-900 border-gray-300 border-2 justify-items-center focus:border-gray-900 rounded-none"
+                        class="rounded-r-none rounded-l-md w-1/3 text-base p-3 h-10 text-gray-900 border-gray-300 border-2 justify-items-center focus:border-gray-900 rounded-none"
                         placeholder="Search your history"
                         v-debounce:500ms="searchAll"
                         v-model="query"

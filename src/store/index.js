@@ -4,6 +4,7 @@ import Vuex from "vuex";
 import apiService from "../services/api.service.js";
 import jwtService from "../services/jwt.service.js";
 import search from "./modules/search";
+import sessions from "./modules/sessions";
 
 Vue.use(Vuex);
 
@@ -211,5 +212,5 @@ export default new Vuex.Store({
         userId: state => state.user.id,
         error: state => state.error
     },
-    modules: { search }
+    modules: { search, sessions }
 });

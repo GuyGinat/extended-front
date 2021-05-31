@@ -165,8 +165,8 @@
 // @ts-nocheck
 
 import moment from "moment";
-import { objectify, getObjectDiff } from "../utils/object.utils";
-import { isEqual, reduce } from "lodash";
+import { objectify } from "../utils/object.utils";
+import { isEqual } from "lodash";
 
 export default {
     name: "Profile",

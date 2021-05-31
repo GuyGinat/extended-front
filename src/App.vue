@@ -15,6 +15,12 @@
                     to="/profile"
                     >Profile</router-link
                 >
+                <router-link
+                    v-if="this.isSignedIn"
+                    class="mr-1 py-1 nav-btn"
+                    to="/sessions"
+                    >Sessions</router-link
+                >
                 <router-link to="/main" class="mr-1 py-1 nav-btn">
                     Search</router-link
                 >

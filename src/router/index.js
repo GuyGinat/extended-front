@@ -4,6 +4,7 @@ import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
 import Profile from "../views/Profile.vue";
 import Main from "../views/Main.vue";
+import Sessions from "../views/Sessions.vue"
 import ExtensionRedirect from "../views/ExtensionRedirect.vue";
 import store from "../store";
 
@@ -27,6 +28,14 @@ const routes = [
         path: "/main",
         name: "main",
         component: Main,
+        meta: {
+            requiresAuth: true
+        }
+    },
+    {
+        path: "/sessions",
+        name: "sessions",
+        component: Sessions,
         meta: {
             requiresAuth: true
         }
